@@ -1,6 +1,6 @@
 var FS = require("fs");
 var PNG = require("pngjs").PNG;
-var JPEG = require("jpeg-js");
+var JPEG = require("jpeg-turbo");
 var MIME = require("mime");
 var Resize = require("./resize.js");
 
@@ -54,7 +54,11 @@ function Jimp(path, cb) {
             break;
         case MIME_JPEG:
             function decode(data) {
-                _this.bitmap = JPEG.decode(data);
+                var options = {
+                    format: JPEG.FORMAT_RBGA
+                }
+
+                _this.bitmap = JPEG.decompressSync(data, options);
                 cb.call(_this);
             }
             if ("string" === typeof path) {
