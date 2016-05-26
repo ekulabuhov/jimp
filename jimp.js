@@ -55,7 +55,7 @@ function Jimp(path, cb) {
         case MIME_JPEG:
             function decode(data) {
                 var options = {
-                    format: JPEG.FORMAT_RBGA
+                    format: JPEG.FORMAT_RGBA
                 }
 
                 _this.bitmap = JPEG.decompressSync(data, options);
@@ -560,9 +560,14 @@ Jimp.prototype.write = function (path, cb) {
             });
             break;
         case MIME_JPEG:
-            var jpeg = JPEG.encode(_this.bitmap, _this._quality);
+            var options = {
+              format: JPEG.FORMAT_RGBA,
+              width: _this.bitmap.width,
+              height: _this.bitmap.height
+            }
+            var jpeg = JPEG.compressSync(_this.bitmap.data, options);
             var stream = FS.createWriteStream(path);
-            stream.write(jpeg.data);
+            stream.write(jpeg);
             stream.end();
             cb.call(_this);
             break;
